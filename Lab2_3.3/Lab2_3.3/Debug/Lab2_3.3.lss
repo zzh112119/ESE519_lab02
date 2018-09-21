@@ -353,8 +353,9 @@ ISR(TIMER1_OVF_vect){
 00000328 <__vector_14>:
 
 
+// control the frequency by ping sensor
 ISR(TIMER0_COMPA_vect)
-{	
+{
      328:	1f 92       	push	r1
      32a:	0f 92       	push	r0
      32c:	0f b6       	in	r0, 0x3f	; 63
@@ -569,7 +570,7 @@ ISR(TIMER0_COMPA_vect)
 
 000004b6 <ADC_DAC>:
 
-
+// control the volume by light resistor
 void ADC_DAC(void){
      4b6:	cf 93       	push	r28
      4b8:	df 93       	push	r29
@@ -586,6 +587,7 @@ void ADC_DAC(void){
      4cc:	8f 93       	push	r24
      4ce:	0e 94 43 08 	call	0x1086	; 0x1086 <printf>
 
+	//000
 	if((ADC > 350) && (ADC < 380)){
      4d2:	88 81       	ld	r24, Y
      4d4:	99 81       	ldd	r25, Y+1	; 0x01
@@ -610,6 +612,7 @@ void ADC_DAC(void){
      4f8:	81 c0       	rjmp	.+258    	; 0x5fc <ADC_DAC+0x146>
 
 	}
+	//001
 	else if((ADC > 380) && (ADC < 420)){
      4fa:	80 91 78 00 	lds	r24, 0x0078	; 0x800078 <__TEXT_REGION_LENGTH__+0x7e0078>
      4fe:	90 91 79 00 	lds	r25, 0x0079	; 0x800079 <__TEXT_REGION_LENGTH__+0x7e0079>
@@ -629,6 +632,7 @@ void ADC_DAC(void){
      51a:	2c 98       	cbi	0x05, 4	; 5
      51c:	6f c0       	rjmp	.+222    	; 0x5fc <ADC_DAC+0x146>
 	}
+	//010
 	else if((ADC >= 420) && (ADC < 450)){
      51e:	80 91 78 00 	lds	r24, 0x0078	; 0x800078 <__TEXT_REGION_LENGTH__+0x7e0078>
      522:	90 91 79 00 	lds	r25, 0x0079	; 0x800079 <__TEXT_REGION_LENGTH__+0x7e0079>
@@ -648,6 +652,7 @@ void ADC_DAC(void){
      53e:	2c 98       	cbi	0x05, 4	; 5
      540:	5d c0       	rjmp	.+186    	; 0x5fc <ADC_DAC+0x146>
 	}
+	//011
 	else if((ADC >= 450) && (ADC < 480)){
      542:	80 91 78 00 	lds	r24, 0x0078	; 0x800078 <__TEXT_REGION_LENGTH__+0x7e0078>
      546:	90 91 79 00 	lds	r25, 0x0079	; 0x800079 <__TEXT_REGION_LENGTH__+0x7e0079>
@@ -667,6 +672,7 @@ void ADC_DAC(void){
      562:	2c 98       	cbi	0x05, 4	; 5
      564:	4b c0       	rjmp	.+150    	; 0x5fc <ADC_DAC+0x146>
 	}
+	//100
 	else if((ADC >= 480) && (ADC < 510)){
      566:	80 91 78 00 	lds	r24, 0x0078	; 0x800078 <__TEXT_REGION_LENGTH__+0x7e0078>
      56a:	90 91 79 00 	lds	r25, 0x0079	; 0x800079 <__TEXT_REGION_LENGTH__+0x7e0079>
@@ -686,6 +692,7 @@ void ADC_DAC(void){
      586:	2c 9a       	sbi	0x05, 4	; 5
      588:	39 c0       	rjmp	.+114    	; 0x5fc <ADC_DAC+0x146>
 	}
+	//101
 	else if((ADC >= 510) && (ADC < 540)){
      58a:	80 91 78 00 	lds	r24, 0x0078	; 0x800078 <__TEXT_REGION_LENGTH__+0x7e0078>
      58e:	90 91 79 00 	lds	r25, 0x0079	; 0x800079 <__TEXT_REGION_LENGTH__+0x7e0079>
@@ -705,6 +712,7 @@ void ADC_DAC(void){
      5aa:	2c 9a       	sbi	0x05, 4	; 5
      5ac:	27 c0       	rjmp	.+78     	; 0x5fc <ADC_DAC+0x146>
 	}
+	//110
 	else if((ADC >= 540) && (ADC < 570)){
      5ae:	80 91 78 00 	lds	r24, 0x0078	; 0x800078 <__TEXT_REGION_LENGTH__+0x7e0078>
      5b2:	90 91 79 00 	lds	r25, 0x0079	; 0x800079 <__TEXT_REGION_LENGTH__+0x7e0079>
@@ -724,6 +732,7 @@ void ADC_DAC(void){
      5ce:	2c 9a       	sbi	0x05, 4	; 5
      5d0:	15 c0       	rjmp	.+42     	; 0x5fc <ADC_DAC+0x146>
 	}
+	//111
 	else if((ADC >= 570) && (ADC < 600)){
      5d2:	80 91 78 00 	lds	r24, 0x0078	; 0x800078 <__TEXT_REGION_LENGTH__+0x7e0078>
      5d6:	90 91 79 00 	lds	r25, 0x0079	; 0x800079 <__TEXT_REGION_LENGTH__+0x7e0079>
@@ -743,6 +752,7 @@ void ADC_DAC(void){
      5f2:	2c 9a       	sbi	0x05, 4	; 5
      5f4:	03 c0       	rjmp	.+6      	; 0x5fc <ADC_DAC+0x146>
 	}
+	//default:000
 	else{
 		PORTB &= ~(1 << PORTB2);
      5f6:	2a 98       	cbi	0x05, 2	; 5

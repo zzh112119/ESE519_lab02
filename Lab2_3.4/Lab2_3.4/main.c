@@ -17,9 +17,9 @@ volatile int overflow = 0;
 volatile unsigned int diff = 0;
 volatile unsigned int pulse_width =0;
 void output_length();
-void ADC_DAC();
+void volume_ctrl();
 
-//set 8 stages for frequency range
+//set 8 stages for freqency range
 #define C7 60;
 #define B7 64;
 #define A7 71;
@@ -38,27 +38,28 @@ int main(void)
 	uart_init();	// init UART
 	
 	DDRB = 0x00;	// init PORTB to be all inputs
-	DDRC = 0xFF;	// init PORTC to be all outputs
+	//DDRC = 0xFF;	// init PORTC to be all outputs
 	DDRD = 0x40;	// enable PD6 to be output
-	
+		DDRC = 0x0;	// init PORTC to be all inputs
+		PORTC &= ~(1 << PORTC0); // set PC0 active high
 	TCCR1A = 0x00;	// init High byte to zero
 	TCCR1B = 0x00;  // init Mid byte to zero
 	TCCR1C = 0x00;	// init Low byte to zero
 	
-	DDRB  |=  (1<<PORTB1) | (1<<PORTB2) | (1<<PORTB3)| (1<<PORTB4);	// enable PB1 to be output channel
-	PORTD |=  (1 << PORTD6); //enable PD6 to be output channel 
-	PORTB |=  (1<<PORTB1) | (1<<PORTB2);// change PB1 PB2 to high
+	DDRB  |=  (1<<PORTB1) | (1<<PORTB2);	// enable PB1 to be output channel
+	PORTD |=  (1<<PORTD6); //enable PD6 to be output channel 
+	PORTB |=  (1<<PORTB1);// change PB1 PB2 to high
 
-	TIMSK1 |= (1<<ICIE1) | (1<<TOIE1);  // set overflow interrupt 
-	TCCR1B |= (1<<CS11 ) | (1<<ICES1);	// set clock prescale to 8 and enable rising edge capture
+	//TIMSK1 |= (1<<ICIE1) | (1<<TOIE1);  // set overflow interrupt 
+	//TCCR1B |= (1<<CS11 ) | (1<<ICES1);	// set clock prescale to 8 and enable rising edge capture
 	
 	TCNT1 = 0;	// reset Counter 1
 	
 	TCCR0A |= (1 << COM0A0) | (1 << WGM01); //Toggle OC1A on compare match;CTC mode
 	TCCR0B |= (1 << CS01) | (1 << CS00); // prescaler 64
 
-	DDRC = 0x0;	// init PORTC to be all inputs
-	PORTC &= ~(1 << PORTC0); // set PC0 active high
+	TCCR1A |= (1 << COM1B1) | (1 << WGM11) | (1 << WGM10);
+	TCCR1B |= (1 << CS12) | (1 << CS10) | (1 << WGM12);
 		
 	ADMUX |= (1 << REFS0); //AVcc refer
 	ADCSRA |= (1 << ADEN); //turn on ADC
@@ -69,19 +70,21 @@ int main(void)
 
 	sei();		// enable interrupt
 	
+	
 	while (1)
+	
 	{
 		TIMSK1 |= (1<<ICIE1) | (1<<TOIE1);
-		if (TCNT1>= 9){		// counts 9 times to obtain 100kHz
-			PORTB ^= (1<<PORTB1);
-			TCNT1 = 0;
-			}
+		//PORTB ^= (1<<PORTB1);
 		output_length();
+		volume_ctrl();
 		TIMSK0 |= (1 << OCIE0A);	
-		
 		//volume control
-		ADC_DAC();
+		//printf("OCR1B:%d", OCR1B);
+
+		 
 	}
+	
 }
 
 void output_length(void){
@@ -126,99 +129,45 @@ ISR(TIMER0_COMPA_vect)
 {
 	if(pulse_width > - 1187){
 		OCR0A = C7;
-		printf("C7 ");
+		//printf("C7 ");
 	}
 	else if(pulse_width > -1874){
 		OCR0A = B7;
-		printf("B7 ");
+		//printf("B7 ");
 	}
 	else if(pulse_width > -2561){
 		OCR0A = A7;
-		printf("A7 ");
+		//printf("A7 ");
 	}
 	else if(pulse_width > -3248){
 		OCR0A = G6;
-		printf("G6 ");
+		//printf("G6 ");
 	}
 	else if(pulse_width > -3935){
 		OCR0A = F6;
-		printf("F6 ");
+		//printf("F6 ");
 	}
 	else if(pulse_width > -4622){
 		OCR0A = E6;
-		printf("E6 ");
+		//printf("E6 ");
 	}
 	else if(pulse_width > -5309){
 		OCR0A = D6;
-		printf("D6 ");
+		//printf("D6 ");
 	}
 	else{
 		OCR0A = C6;
-		printf("C6 ");
+		//printf("C6 ");
 	}
 	
 	TIMSK0 &= ~(1 << OCIE0A);
 	
-	printf("pulse_width: %d, OCR0A: %d\n",-pulse_width,OCR0A); // print to serial
+	//printf("pulse_width: %d, OCR0A: %d\n",-pulse_width,OCR0A); // print to serial
 }
 
 // control the volume by light resistor
-void ADC_DAC(void){
-	printf("ADC: %d\n",ADC);
-
-	//000
-	if((ADC > 350) && (ADC < 380)){
-		PORTB &= ~(1 << PORTB2);
-		PORTB &= ~(1 << PORTB3);
-		PORTB &= ~(1 << PORTB4);
-
-	}
-	//001
-	else if((ADC > 380) && (ADC < 420)){
-		PORTB |= (1 << PORTB2);
-		PORTB &= ~(1 << PORTB3);
-		PORTB &= ~(1 << PORTB4);
-	}
-	//010
-	else if((ADC >= 420) && (ADC < 450)){
-		PORTB &= ~(1 << PORTB2);
-		PORTB |= (1 << PORTB3);
-		PORTB &= ~(1 << PORTB4);
-	}
-	//011
-	else if((ADC >= 450) && (ADC < 480)){
-		PORTB |= (1 << PORTB2);
-		PORTB |= (1 << PORTB3);
-		PORTB &= ~(1 << PORTB4);
-	}
-	//100
-	else if((ADC >= 480) && (ADC < 510)){
-		PORTB &= ~(1 << PORTB2);
-		PORTB &= ~(1 << PORTB3);
-		PORTB |= (1 << PORTB4);
-	}
-	//101
-	else if((ADC >= 510) && (ADC < 540)){
-		PORTB |= (1 << PORTB2);
-		PORTB &= ~(1 << PORTB3);
-		PORTB |= (1 << PORTB4);
-	}
-	//110
-	else if((ADC >= 540) && (ADC < 570)){
-		PORTB &= ~(1 << PORTB2);
-		PORTB |= (1 << PORTB3);
-		PORTB |= (1 << PORTB4);
-	}
-	//111
-	else if((ADC >= 570) && (ADC < 600)){
-		PORTB |= (1 << PORTB2);
-		PORTB |= (1 << PORTB3);
-		PORTB |= (1 << PORTB4);
-	}
-	//default:000
-	else{
-		PORTB &= ~(1 << PORTB2);
-		PORTB &= ~(1 << PORTB3);
-		PORTB &= ~(1 << PORTB4);			
-	}
+void volume_ctrl(void){
+	//ADC: 350 ~600
+	OCR1A = 5; //set 100 Hz
+	OCR1B = OCR1A / (700.0f/(float)ADC/5.0f);
 }

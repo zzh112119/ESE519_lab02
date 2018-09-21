@@ -103,11 +103,11 @@ ISR(TIMER1_OVF_vect){
 
 ISR(TIMER0_COMPA_vect){
 	temp_pulse = -pulse_width;
-	if (temp_pulse<500){temp_pulse=500;}
+	if (temp_pulse<500){temp_pulse=500;} // set boundaries
 	if (temp_pulse>5000){temp_pulse=5000;}
-	buzzer_count = temp_pulse/5000.0f * 15 + 13;
+	buzzer_count = temp_pulse/5000.0f * 15 + 13; // convert pulse width to compare number
 
-	OCR0A = buzzer_count;
+	OCR0A = buzzer_count; // set compare number and get frequency
 	printf("%d\n",buzzer_count);
-	TIMSK0 &= ~(1 << OCIE0A);
+	TIMSK0 &= ~(1 << OCIE0A); // disable compare match interrupt
 }

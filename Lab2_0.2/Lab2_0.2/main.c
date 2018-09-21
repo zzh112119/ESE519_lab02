@@ -12,16 +12,18 @@
 
 int main(void)
 {
-	/* Replace with your application code */
+	//initialization
 	DDRB = 0x20;
 	PORTB = 0x01;
 	
 	while (1)
 	{
+		//if PB0 is low 
 		if(!(PINB & 0x01))
 		{
 			PORTB |= 0x20;
 		}
+		//if PB0 is high
 		else
 		{
 			PORTB &= 0xDF;

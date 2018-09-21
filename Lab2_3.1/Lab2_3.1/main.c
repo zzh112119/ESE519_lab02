@@ -27,7 +27,7 @@ int main(void)
 	
 	while (1)
 	{
-		float voltage = (float)ADC / 1024.0f * 5.0f;
+		float voltage = (float)ADC / 1024.0f * 5.0f;//convert ADC value to voltage value
 		printf("%.2f V \n",voltage);
 		printf("ADC: %d\n", ADC);
 	}

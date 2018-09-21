@@ -470,6 +470,7 @@ ISR(TIMER0_COMPA_vect)
  2d4:	bf 93       	push	r27
  2d6:	ef 93       	push	r30
  2d8:	ff 93       	push	r31
+	// change the output voltage of DAC according to the pulse width
 	if (pulse_width!=0){
  2da:	80 91 22 01 	lds	r24, 0x0122	; 0x800122 <__data_end>
  2de:	90 91 23 01 	lds	r25, 0x0123	; 0x800123 <__data_end+0x1>
@@ -498,6 +499,7 @@ ISR(TIMER0_COMPA_vect)
  310:	0f 90       	pop	r0
  312:	0f 90       	pop	r0
 	}
+	//000
 	if(pulse_width > -1187){
  314:	80 91 22 01 	lds	r24, 0x0122	; 0x800122 <__data_end>
  318:	90 91 23 01 	lds	r25, 0x0123	; 0x800123 <__data_end+0x1>
@@ -513,6 +515,7 @@ ISR(TIMER0_COMPA_vect)
  328:	45 c0       	rjmp	.+138    	; 0x3b4 <__vector_14+0xfc>
 
 	}
+	//001
 	else if(pulse_width > -1874){
  32a:	80 91 22 01 	lds	r24, 0x0122	; 0x800122 <__data_end>
  32e:	90 91 23 01 	lds	r25, 0x0123	; 0x800123 <__data_end+0x1>
@@ -527,6 +530,7 @@ ISR(TIMER0_COMPA_vect)
  33c:	2c 98       	cbi	0x05, 4	; 5
  33e:	3a c0       	rjmp	.+116    	; 0x3b4 <__vector_14+0xfc>
 	}
+	//010
 	else if(pulse_width > -2561){
  340:	80 91 22 01 	lds	r24, 0x0122	; 0x800122 <__data_end>
  344:	90 91 23 01 	lds	r25, 0x0123	; 0x800123 <__data_end+0x1>
@@ -541,6 +545,7 @@ ISR(TIMER0_COMPA_vect)
  352:	2c 98       	cbi	0x05, 4	; 5
  354:	2f c0       	rjmp	.+94     	; 0x3b4 <__vector_14+0xfc>
 	}
+	//011
 	else if(pulse_width > -3248){
  356:	80 91 22 01 	lds	r24, 0x0122	; 0x800122 <__data_end>
  35a:	90 91 23 01 	lds	r25, 0x0123	; 0x800123 <__data_end+0x1>
@@ -555,6 +560,7 @@ ISR(TIMER0_COMPA_vect)
  368:	2c 98       	cbi	0x05, 4	; 5
  36a:	24 c0       	rjmp	.+72     	; 0x3b4 <__vector_14+0xfc>
 	}
+	//100
 	else if(pulse_width > -3935){
  36c:	80 91 22 01 	lds	r24, 0x0122	; 0x800122 <__data_end>
  370:	90 91 23 01 	lds	r25, 0x0123	; 0x800123 <__data_end+0x1>
@@ -569,6 +575,7 @@ ISR(TIMER0_COMPA_vect)
  37e:	2c 9a       	sbi	0x05, 4	; 5
  380:	19 c0       	rjmp	.+50     	; 0x3b4 <__vector_14+0xfc>
 	}
+	//101
 	else if(pulse_width > -4622){
  382:	80 91 22 01 	lds	r24, 0x0122	; 0x800122 <__data_end>
  386:	90 91 23 01 	lds	r25, 0x0123	; 0x800123 <__data_end+0x1>
@@ -583,6 +590,7 @@ ISR(TIMER0_COMPA_vect)
  394:	2c 9a       	sbi	0x05, 4	; 5
  396:	0e c0       	rjmp	.+28     	; 0x3b4 <__vector_14+0xfc>
 	}
+	//110
 	else if(pulse_width > -5309){
  398:	80 91 22 01 	lds	r24, 0x0122	; 0x800122 <__data_end>
  39c:	90 91 23 01 	lds	r25, 0x0123	; 0x800123 <__data_end+0x1>
@@ -597,6 +605,7 @@ ISR(TIMER0_COMPA_vect)
  3aa:	2c 9a       	sbi	0x05, 4	; 5
  3ac:	03 c0       	rjmp	.+6      	; 0x3b4 <__vector_14+0xfc>
 	}
+	//111
 	else{
 		PORTB |= (1 << PORTB2);
  3ae:	2a 9a       	sbi	0x05, 2	; 5

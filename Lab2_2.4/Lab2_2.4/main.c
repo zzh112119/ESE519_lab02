@@ -19,6 +19,7 @@ volatile int temp_pulse =0;
 volatile int buzzer_count= 200;
 void output_length();
 
+// set 8 stages for the frequency range
 #define C7 15;
 #define B7 16;
 #define A7 18;
@@ -108,7 +109,7 @@ ISR(TIMER1_OVF_vect){
 
 ISR(TIMER0_COMPA_vect)
 {	
-	
+	// if button is on, using continuous mode
 	if(PINB & (1 << PINB2)){
 		temp_pulse = -pulse_width;
 		if (temp_pulse<500){temp_pulse=500;}
@@ -119,6 +120,7 @@ ISR(TIMER0_COMPA_vect)
 		printf("%d\n",buzzer_count);
 		TIMSK0 &= ~(1 << OCIE0A);
 		}
+	// if button is off, using discrete mode
 	else{
 		if(pulse_width > - 1187){
 			OCR0A = C7;

@@ -19,6 +19,7 @@ volatile int temp_pulse =0;
 volatile int buzzer_count= 200;
 void output_length();
 
+// set 8 stages for frequency range
 #define C7 15;
 #define B7 16;
 #define A7 18;
@@ -105,46 +106,55 @@ ISR(TIMER1_OVF_vect){
 
 ISR(TIMER0_COMPA_vect)
 {	
+	// change the output voltage of DAC according to the pulse width
 	if (pulse_width!=0){
 		printf("%d \n",-pulse_width); // print to serial
 		PORTB ^= (1 << PORTB5);
 	}
+	//000
 	if(pulse_width > -1187){
 		PORTB &= ~(1 << PORTB2);
 		PORTB &= ~(1 << PORTB3);
 		PORTB &= ~(1 << PORTB4);
 
 	}
+	//001
 	else if(pulse_width > -1874){
 		PORTB |= (1 << PORTB2);
 		PORTB &= ~(1 << PORTB3);
 		PORTB &= ~(1 << PORTB4);
 	}
+	//010
 	else if(pulse_width > -2561){
 		PORTB &= ~(1 << PORTB2);
 		PORTB |= (1 << PORTB3);
 		PORTB &= ~(1 << PORTB4);
 	}
+	//011
 	else if(pulse_width > -3248){
 		PORTB |= (1 << PORTB2);
 		PORTB |= (1 << PORTB3);
 		PORTB &= ~(1 << PORTB4);
 	}
+	//100
 	else if(pulse_width > -3935){
 		PORTB &= ~(1 << PORTB2);
 		PORTB &= ~(1 << PORTB3);
 		PORTB |= (1 << PORTB4);
 	}
+	//101
 	else if(pulse_width > -4622){
 		PORTB |= (1 << PORTB2);
 		PORTB &= ~(1 << PORTB3);
 		PORTB |= (1 << PORTB4);
 	}
+	//110
 	else if(pulse_width > -5309){
 		PORTB &= ~(1 << PORTB2);
 		PORTB |= (1 << PORTB3);
 		PORTB |= (1 << PORTB4);
 	}
+	//111
 	else{
 		PORTB |= (1 << PORTB2);
 		PORTB |= (1 << PORTB3);
